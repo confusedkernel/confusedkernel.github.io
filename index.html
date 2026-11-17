@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>confusedkernel</title>
+  <meta name="description" content="All projects with a GitHub page.">
+  <link rel="icon" href="https://github.com/confusedkernel.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap">
+  <style>
+    /* ---- Tokens: from papercut's theme.css (Void) ---- */
+    :root {
+      color-scheme: light dark;
+      --bg: #f9f9f9;
+      --bg-alt: #ffffff;
+      --fg: #000000;
+      --muted: #111111;
+      --border: #000000;
+      --hover-bg: #efefef;
+      --post-shell-shadow: 0 14px 24px -18px rgba(0, 0, 0, 0.35);
+      --card-base-shadow: 0 12px 20px -16px rgba(0, 0, 0, 0.34);
+      --card-hover-shadow: 0 18px 28px -14px rgba(0, 0, 0, 0.38);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: rgb(18, 18, 18);
+        --bg-alt: #222222;
+        --fg: #f1f1f1;
+        --muted: #d2d2d2;
+        --border: #d8d8d8;
+        --hover-bg: #2a2a2a;
+        --post-shell-shadow: 0 14px 24px -18px rgba(255, 255, 255, 0.32);
+        --card-base-shadow: 0 12px 20px -16px rgba(255, 255, 255, 0.28);
+        --card-hover-shadow: 0 18px 28px -14px rgba(255, 255, 255, 0.33);
+      }
+    }
+
+    /* ---- Base ---- */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: "Space Mono", "Courier New", monospace;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+      font-size: inherit;
+      font-weight: inherit;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .label {
+      font-size: .75rem;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--muted);
+    }
+
+    .ul-hover {
+      text-underline-offset: 4px;
+    }
+
+    .ul-hover:hover,
+    .ul-hover:focus-visible {
+      text-decoration: underline;
+    }
+
+    /* ---- Layout: profile left, cards right ---- */
+    .shell {
+      margin: 0 auto;
+      max-width: 1120px;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+
+    @media (min-width: 640px) {
+      .shell {
+        padding: 2.5rem 1.5rem;
+      }
+    }
+
+    @media (min-width: 900px) {
+      .shell {
+        grid-template-columns: 17rem minmax(0, 1fr);
+        gap: 3.5rem;
+        padding: 4rem 2rem;
+      }
+
+      .profile {
+        position: sticky;
+        top: 4rem;
+        align-self: start;
+      }
+    }
+
+    /* ---- Profile (left) ---- */
+    .profile {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .avatar {
+      display: block;
+      width: 5rem;
+      height: 5rem;
+      border: 1px solid var(--border);
+      object-fit: cover;
+      background: var(--bg-alt);
+    }
+
+    .profile h1 {
+      font-size: 1.875rem;
+      line-height: 2.25rem;
+    }
+
+    @media (min-width: 640px) {
+      .profile h1 {
+        font-size: 2.25rem;
+        line-height: 2.5rem;
+      }
+    }
+
+    .username {
+      font-size: .875rem;
+      color: var(--muted);
+    }
+
+    .username:hover {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .tagline {
+      font-size: .875rem;
+      line-height: 1.625;
+      color: var(--muted);
+      max-width: 32ch;
+    }
+
+    .rule {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: .25rem 0;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      font-size: .75rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      padding: .5rem .75rem;
+      transition: border-width 200ms ease, background-color 200ms ease, color 180ms ease, box-shadow 200ms ease;
+    }
+
+    /* Void's .index-hover: fill + inset ring doubles the 1px outline */
+    @media (hover: hover) and (pointer: fine) {
+
+      .chip:hover,
+      .chip:focus-visible {
+        background: var(--hover-bg);
+        color: var(--fg);
+        box-shadow: inset 0 0 0 1px var(--border);
+      }
+    }
+
+    .chip:focus-visible {
+      outline: none;
+    }
+
+    /* ---- Sites (right) ---- */
+    .sites {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+    }
+
+    .section-head h2 {
+      font-size: .875rem;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+
+    .cards {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .card {
+      position: relative;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      border: 1px solid var(--border);
+      background: var(--bg-alt);
+      padding: 1rem;
+      cursor: pointer;
+      box-shadow: var(--card-base-shadow);
+      transition: transform 220ms ease;
+      outline: none;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      box-shadow: var(--card-hover-shadow);
+      opacity: 0;
+      transition: opacity 220ms ease;
+      z-index: -1;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+
+      .card:hover,
+      .card:focus-visible,
+      .card:focus-within {
+        transform: translateY(-2px);
+      }
+
+      .card:hover::after,
+      .card:focus-visible::after,
+      .card:focus-within::after {
+        opacity: 1;
+      }
+    }
+
+    .card:focus-visible {
+      outline: 1px solid var(--border);
+      outline-offset: 3px;
+    }
+
+    .card-main {
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+      min-width: 0;
+    }
+
+    .card {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+    }
+
+    .card-side {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: .4rem;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .card .arrow {
+      display: inline-block;
+      margin-left: .3rem;
+      transition: transform 220ms ease;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+
+      .card:hover .arrow,
+      .card:focus-visible .arrow {
+        transform: translate(2px, -2px);
+      }
+    }
+
+    @media (min-width: 640px) {
+      .card {
+        padding: 1.25rem 1.5rem;
+        gap: 2rem;
+      }
+    }
+
+    .eyebrow {
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--muted);
+    }
+
+    .dot {
+      padding: 0 .5rem;
+    }
+
+    .card h3 {
+      font-size: 1.25rem;
+      line-height: 1.75rem;
+    }
+
+    .card h3 a:hover {
+      text-decoration: underline;
+    }
+
+    .card .url {
+      font-size: .75rem;
+      color: var(--muted);
+      overflow-wrap: anywhere;
+    }
+
+    .card .desc {
+      font-size: .875rem;
+      line-height: 1.625;
+      color: var(--muted);
+      max-width: 60ch;
+    }
+
+    .status {
+      font-size: .875rem;
+      color: var(--muted);
+    }
+
+    .status a {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      .card,
+      .card::after,
+      .card .arrow,
+      .chip {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="shell">
+    <aside class="profile">
+      <img class="avatar" src="https://github.com/confusedkernel.png?size=160" alt="" width="80" height="80">
+      <div>
+        <h1 id="gh-name">Tyler</h1>
+        <a class="username" href="https://github.com/confusedkernel">@confusedkernel</a>
+      </div>
+      <p class="tagline">projects with a github page.</p>
+      <hr class="rule">
+      <div class="chips">
+        <a class="chip" href="https://github.com/confusedkernel" target="_blank" rel="noreferrer">GitHub</a>
+        <a class="chip" href="https://heyrelyt.com/" target="_blank" rel="noreferrer">Index</a>
+      </div>
+    </aside>
+
+    <main class="sites" aria-labelledby="sites-heading">
+      <div class="section-head">
+        <h2 id="sites-heading">Sites</h2>
+        <span class="label" id="count"></span>
+      </div>
+      <div class="cards" id="projects">
+        <p class="status">Loading…</p>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    var USER = "confusedkernel";
+
+    /* ---- Whole-card click / keyboard navigation (papercut card-interactions) ---- */
+    (function () {
+      function ignore(t) {return !!t.closest("a, button, input, textarea, select, summary, label");}
+      function hasSelection() {var s = window.getSelection(); return s && s.toString().length > 0;}
+      document.addEventListener("click", function (e) {
+        var card = e.target.closest("[data-card-href]");
+        if (!card || e.defaultPrevented || ignore(e.target) || hasSelection()) return;
+        window.location.href = card.getAttribute("data-card-href");
+      });
+      document.addEventListener("keydown", function (e) {
+        var card = e.target.closest && e.target.closest("[data-card-href]");
+        if (!card || e.target !== card || (e.key !== "Enter" && e.key !== " ")) return;
+        e.preventDefault();
+        window.location.href = card.getAttribute("data-card-href");
+      });
+    })();
+
+    /* ---- Sites: every repo with GitHub Pages enabled ---- */
+    (function () {
+      var SELF = (USER + ".github.io").toLowerCase();
+      var CACHE_KEY = "pages-projects-v3";
+      var CACHE_TTL = 10 * 60 * 1000;
+      var list = document.getElementById("projects");
+      var count = document.getElementById("count");
+
+      function readCache() {
+        try {
+          var c = JSON.parse(sessionStorage.getItem(CACHE_KEY));
+          if (c && Date.now() - c.t < CACHE_TTL) return c.data;
+        } catch (e) { }
+        return null;
+      }
+      function writeCache(data) {
+        try {sessionStorage.setItem(CACHE_KEY, JSON.stringify({t: Date.now(), data: data}));} catch (e) { }
+      }
+
+      async function fetchData() {
+        var gh = {headers: {Accept: "application/vnd.github+json"}};
+        var profile = null;
+        try {
+          var pr = await fetch("https://api.github.com/users/" + USER, gh);
+          if (pr.ok) profile = await pr.json();
+        } catch (e) { }
+
+        var repos = [];
+        for (var page = 1; ; page++) {
+          var res = await fetch("https://api.github.com/users/" + USER + "/repos?per_page=100&page=" + page, gh);
+          if (!res.ok) throw new Error("GitHub API returned " + res.status);
+          var batch = await res.json();
+          repos = repos.concat(batch);
+          if (batch.length < 100) break;
+        }
+        var projects = repos
+          .filter(function (r) {return r.has_pages && !r.fork && !r.archived && r.name.toLowerCase() !== SELF;})
+          .map(function (r) {
+            return {
+              name: r.name,
+              description: r.description,
+              url: r.homepage || ("https://" + USER + ".github.io/" + r.name + "/"),
+              repo: r.html_url,
+              language: r.language,
+              pushed: r.pushed_at
+            };
+          })
+          .sort(function (a, b) {return new Date(b.pushed) - new Date(a.pushed);});
+        return {name: profile && profile.name, projects: projects};
+      }
+
+      function el(tag, props) {
+        var node = Object.assign(document.createElement(tag), props || {});
+        for (var i = 2; i < arguments.length; i++) if (arguments[i]) node.append(arguments[i]);
+        return node;
+      }
+
+      function render(data) {
+        if (data.name) document.getElementById("gh-name").textContent = data.name;
+        var projects = data.projects;
+        count.textContent = projects.length + (projects.length === 1 ? " site" : " sites");
+        list.replaceChildren();
+        if (!projects.length) {
+          list.append(el("p", {className: "status", textContent: "No sites yet."}));
+          return;
+        }
+        var fmt = new Intl.DateTimeFormat("en-US", {year: "numeric", month: "short", day: "2-digit"});
+        projects.forEach(function (p) {
+          var card = el("article", {className: "card", tabIndex: 0},
+            el("div", {className: "card-main"},
+              el("p", {className: "eyebrow"},
+                el("time", {dateTime: p.pushed.slice(0, 10), textContent: fmt.format(new Date(p.pushed))}),
+                p.language ? el("span", {className: "dot", textContent: "·"}) : null,
+                p.language ? el("span", {textContent: p.language.toLowerCase()}) : null
+              ),
+              el("h3", {}, el("a", {href: p.url, textContent: p.name})),
+              el("p", {className: "url", textContent: p.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}),
+              p.description ? el("p", {className: "desc", textContent: p.description}) : null
+            ),
+            el("div", {className: "card-side"},
+              el("a", {className: "label ul-hover", href: p.url},
+                "Visit", el("span", {className: "arrow", textContent: "↗", ariaHidden: "true"})),
+              el("a", {className: "label ul-hover", href: p.repo, textContent: "Source"})
+            )
+          );
+          card.setAttribute("data-card-href", p.url);
+          card.setAttribute("role", "link");
+          card.setAttribute("aria-label", p.name);
+          list.append(card);
+        });
+      }
+
+      var cached = readCache();
+      if (cached) {render(cached); return;}
+      fetchData()
+        .then(function (data) {writeCache(data); render(data);})
+        .catch(function (err) {
+          console.error(err);
+          list.replaceChildren(el("p", {className: "status"},
+            "Couldn't load sites right now. ",
+            el("a", {href: "https://github.com/" + USER + "?tab=repositories", textContent: "See them on GitHub."})
+          ));
+        });
+    })();
+  </script>
+</body>
+
+</html>
