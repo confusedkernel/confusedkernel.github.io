@@ -429,7 +429,7 @@
     /* ---- Sites: every repo with GitHub Pages enabled ---- */
     (function () {
       var SELF = (USER + ".github.io").toLowerCase();
-      var CACHE_KEY = "pages-projects-v3";
+      var CACHE_KEY = "pages-projects-v4";
       var CACHE_TTL = 10 * 60 * 1000;
       var list = document.getElementById("projects");
       var count = document.getElementById("count");
@@ -462,7 +462,7 @@
           if (batch.length < 100) break;
         }
         var projects = repos
-          .filter(function (r) {return r.has_pages && !r.fork && !r.archived && r.name.toLowerCase() !== SELF;})
+          .filter(function (r) {return r.has_pages && !r.archived && r.name.toLowerCase() !== SELF;})
           .map(function (r) {
             return {
               name: r.name,
